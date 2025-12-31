@@ -26,12 +26,12 @@
   </thead>
   <tbody>
     <tr th:each="c : ${contacts}">
-      <th scope="row"  th:text="${contacts.count}">1</th>
+      <th scope="row"  th:text="${contacts.size()}">1</th>
       <td th:text="${c.name}"></td>
       <td th:text="${c.email}"></td>
-      <td th:text="${c.phone}">@mdo</td>
-      <td>@mdo</td>
-      
+      <td th:text="${c.phone}"></td>
+      <td><button class="btn btn-danger btn-sm">Delete</button>
+  <button class="btn btn-primary btn-sm">Update</button></td>
     </tr>
     
   </tbody>
