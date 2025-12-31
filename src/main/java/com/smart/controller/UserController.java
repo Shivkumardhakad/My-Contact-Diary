@@ -143,33 +143,31 @@ public class UserController {
 		return "/error";
 		
 	}
-	
-// show contact handler
-// per page = 5[n] 
-// current page = 0 [page] 
 	@GetMapping("/show_contacts/{page}")
-	public String showContact(@PathVariable("page") Integer page,Model model,Principal principal) {
-		
-String name=principal.getName();
-  User user =userRepository.getUserByUserName(name);
-  int id = user.getId();
-  
-//Current-page page 
-//Contact per page -5 
-    Pageable pageable  =PageRequest.of(page, 5);
- Page<Contact>  contacts=contactRepository.findByUserId(id,pageable);
- 
- for(Contact contact:contacts) {
-	  
-	 System.out.println(contact);
- }   
-      model.addAttribute("contacts", contacts);
-      model.addAttribute("currentpage",page);
-      model.addAttribute("totalpages", contacts.getTotalPages() );
-		model.addAttribute("title","Show Contact");
-		return "normal/show_contacts";
+	public String showContact(@PathVariable("page") Integer page, Model model, Principal principal) {
+	    
+	    // Title set kiya
+	    model.addAttribute("title", "Show Contact");
+
+	    // User nikala
+	    String name = principal.getName();
+	    User user = userRepository.getUserByUserName(name);
+	    
+	    // Page Request banaya (Current Page, Records Per Page)
+	    Pageable pageable = PageRequest.of(page, 5);
+	    
+	    // Data fetch kiya
+	    Page<Contact> contacts = contactRepository.findByUserId(user.getId(), pageable);
+	    
+	    // Model attributes set kiye
+	    model.addAttribute("contacts", contacts);
+	    
+	    // --- YAHAN CHANGE KIYA HAI (CamelCase use kiya hai) ---
+	    model.addAttribute("currentPage", page);       // 'currentpage' nahi 'currentPage'
+	    model.addAttribute("totalPages", contacts.getTotalPages()); // 'totalpages' nahi 'totalPages'
+	    
+	    return "normal/show_contacts";
 	}
-	
 // delete contact handler
 @DeleteMapping("/contact/{id}")
 public String deleteContact(@PathVariable("id") int id ) {
