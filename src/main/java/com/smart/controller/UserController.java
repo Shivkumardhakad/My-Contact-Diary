@@ -7,15 +7,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
-import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -144,21 +145,27 @@ public class UserController {
 	}
 	
 // show contact handler
-	@GetMapping("/show_contacts")
-	public String showContact(Model model,Principal principal) {
+// per page = 5[n] 
+// current page = 0 [page] 
+	@GetMapping("/show_contacts/{page}")
+	public String showContact(@PathVariable("page") Integer page,Model model,Principal principal) {
 		
 String name=principal.getName();
   User user =userRepository.getUserByUserName(name);
   int id = user.getId();
   
- List<Contact>  contacts=contactRepository.findByUserId(id);
+//Current-page page 
+//Contact per page -5 
+    Pageable pageable  =PageRequest.of(page, 5);
+ Page<Contact>  contacts=contactRepository.findByUserId(id,pageable);
  
  for(Contact contact:contacts) {
-	 
+	  
 	 System.out.println(contact);
  }   
       model.addAttribute("contacts", contacts);
-
+      model.addAttribute("currentpage",page);
+      model.addAttribute("totalpages", contacts.getTotalPages() );
 		model.addAttribute("title","Show Contact");
 		return "normal/show_contacts";
 	}

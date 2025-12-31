@@ -25,8 +25,10 @@
     </tr>
   </thead>
   <tbody>
+  <!--  show contacts -->
+  
     <tr th:each="c : ${contacts}">
-      <th scope="row"  th:text="${contacts.size()}">1</th>
+      <th scope="row"  th:text="${'SCMUSER'+c.cId}">1</th>
       <td th:text="${c.name}"></td>
       <td th:text="${c.email}"></td>
       <td th:text="${c.phone}"></td>
@@ -36,6 +38,16 @@
     
   </tbody>
 </table>
+<!-- pegination  -->
+		<nav aria-label="Page navigation example">
+		  <ul class="pagination">
+		    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+		    <li class="page-item"><a class="page-link" href="#">1</a></li>
+		    <li class="page-item"><a class="page-link" href="#">2</a></li>
+		    <li class="page-item"><a class="page-link" href="#">3</a></li>
+		    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+		  </ul>
+		</nav>
 </div>
 	
 
