@@ -103,6 +103,7 @@ public class UserController {
 		if(file.isEmpty()) {
 			
 			System.out.println("Image file :" +"file does not receved");
+			contact.setImage("contact.png");
 		}
 		else {
 			
@@ -168,6 +169,29 @@ public class UserController {
 	    
 	    return "normal/show_contacts";
 	}
+	
+//    showing particular contact detail 
+	@GetMapping("/{cId}/contact")
+	public String showContactDetail(@PathVariable("cId")Integer cId,Model model) {
+		     System.out.println("CID = "+cId);
+		     
+	Contact contact	    = contactRepository.findBycId(cId);
+		     
+	System.out.println(contact);
+		     model.addAttribute("title","Contact dashbord ");
+		     model.addAttribute("contact",contact);
+		     
+		
+		return "normal/contact_detail";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 // delete contact handler
 @DeleteMapping("/contact/{id}")
 public String deleteContact(@PathVariable("id") int id ) {

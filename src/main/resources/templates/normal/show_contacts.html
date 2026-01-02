@@ -29,7 +29,8 @@
   
     <tr th:each="c : ${contacts}">
       <th scope="row"  th:text="${'SCMUSER'+c.cId}">1</th>
-      <td > <img src="" class="my_profile_picture" th:src="@{'/img/'+${c.image}}"  alt="" /><span class="ml-3" th:text="${c.name}"></span></td>
+      <td > <img src="" class="my_profile_picture" th:src="@{'/img/'+${c.image}}"  alt="" />
+      <span class="ml-3" th:text="${c.name}"></span></td>
       <td class="mt-2 "  > 
       <a th:href="@{'/user/'+${c.cId}+'/contact'}" href="#" >
       <span th:text="${c.email}"></span>

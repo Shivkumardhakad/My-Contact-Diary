@@ -85,5 +85,19 @@ body{
 	margin-left:20%;
 }
 
+.my_profile_picture{
+	height:50px;
+	width:50px;
+	border-radius:50%;
+	border:1px solid black;
+	
+}
+.my_profile_picture_contact
+{
+	height:150px ;
+	width:150px;
+	border-radius:50%;
+}
+
 
 
