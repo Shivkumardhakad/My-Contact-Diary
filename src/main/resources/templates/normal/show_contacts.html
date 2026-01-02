@@ -29,15 +29,22 @@
   
     <tr th:each="c : ${contacts}">
       <th scope="row"  th:text="${'SCMUSER'+c.cId}">1</th>
-      <td th:text="${c.name}"></td>
-      <td th:text="${c.email}"></td>
-      <td th:text="${c.phone}"></td>
-      <td><button class="btn btn-danger btn-sm">Delete</button>
-  <button class="btn btn-primary btn-sm">Update</button></td>
+      <td > <img src="" class="my_profile_picture" th:src="@{'/img/'+${c.image}}"  alt="" /><span class="ml-3" th:text="${c.name}"></span></td>
+      <td class="mt-2 "  > 
+      <a th:href="@{'/user/'+${c.cId}+'/contact'}" href="#" >
+      <span th:text="${c.email}"></span>
+      </a>  
+      
+      </td>
+      <td class="mt-2" th:text="${c.phone}" ></td>
+      <td><button class="btn btn-danger btn-sm mt-2 mr-2">Delete</button>
+  <button class="btn btn-primary btn-sm mt-2 mr-1">Update</button></td>
     </tr>
     
   </tbody>
 </table>
+
+
 <!-- pegination  -->
 		<nav aria-label="Page navigation example">
     <ul class="pagination">
