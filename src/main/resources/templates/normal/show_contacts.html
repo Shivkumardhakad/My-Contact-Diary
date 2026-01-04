@@ -6,7 +6,9 @@
 </head>
 <body>
 <section>
-
+<div class="alert alert-success text-center" role="alert" th:if="${session.message}">
+  A simple success alert—check it out!
+</div>
 <div class="card mr-3">
 <div class="card-container text-center">
 <h1 >Your Contacts </h1>
@@ -38,8 +40,15 @@
       
       </td>
       <td class="mt-2" th:text="${c.phone}" ></td>
-      <td><button class="btn btn-danger btn-sm mt-2 mr-2">Delete</button>
-  <button class="btn btn-primary btn-sm mt-2 mr-1">Update</button></td>
+      <td><a href="javascript:void(0)" 
+   class="btn btn-danger btn-sm mt-2 mr-2" 
+   th:onclick="|deleteContact(${c.cId})|">
+   Delete
+</a>
+
+<a href="#" class="btn btn-primary btn-sm mt-2 mr-1" th:href="@{'/user/update/'+${c.cId}}">Update</a>
+
+  
     </tr>
     
   </tbody>
@@ -77,6 +86,28 @@
 </nav>
 </div>
 	
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function deleteContact(id){
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Ye contact delete ho jayega!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+            window.location = "/user/delete/" + id;
+        }
+    });
+}
+</script>
+
 
 	
 </section>

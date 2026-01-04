@@ -2,7 +2,7 @@
 <html lang="en"  xmlns:th="http://www.thymeleaf.org" th:replace="normal/base::layout(~{::section})">
 <head>
 	<meta charset="UTF-8" />
-	<title th:text="${title}">addContact</title>
+	<title th:text="${title}">Update Contact</title>
 </head>
 <body>
 <section>
@@ -10,7 +10,7 @@
 
 <div class="card-body">
 
-<h1 class="text-center">Add Contact </h1>
+<h1 class="text-center">Update Contact </h1>
 
 <div class="container-fluid mt-1">
 <div class="row">
@@ -23,10 +23,12 @@ th:object="${contact}"
 
 method="POST"
  enctype="multipart/form-data"
-th:action="@{/user/process-contact}"
+th:action="@{'/user/update-process/'}"
 class="mt-2"
 
 >
+
+<input type="hidden" name="cId" th:value="${contact.cId}">
 
 <!-- first name -->
 
@@ -37,7 +39,7 @@ class="mt-2"
 </div>
 </div>
 
-<input required type="text" id="firstName"   name="name"  placeholder="Enter Name" class="form-control"/>
+<input required type="text" id="firstName" th:value="${contact.name}" name="name"  placeholder="Enter Name" class="form-control"/>
 </div>
 
 <!--second name  -->
@@ -49,7 +51,7 @@ class="mt-2"
 </div>
 </div>
 
-<input required type="text" id="nickName"  name="nickName"  placeholder="Enter Nick Name" class="form-control"/>
+<input required type="text" id="nickName" th:value="${contact.nickName}" name="nickName"  placeholder="Enter Nick Name" class="form-control"/>
 </div>
 
 
@@ -60,7 +62,7 @@ class="mt-2"
 </div>
 </div>
 
-<input required min="10"   type="text" id="phone"  name="phone"  placeholder="Enter Phone Number" class="form-control"/>
+<input required min="10"   type="text" id="phone" th:value="${contact.phone}" name="phone"  placeholder="Enter Phone Number" class="form-control"/>
 </div>
 
 
@@ -73,7 +75,7 @@ class="mt-2"
 </div>
 </div>
 
-<input required type="email" id="email"  name="email"  placeholder="Enter Your Email" class="form-control"/>
+<input required type="email" id="email" th:value="${contact.email}" name="email"  placeholder="Enter Your Email" class="form-control"/>
 </div>
 
 <!-- work field  -->
@@ -85,22 +87,25 @@ class="mt-2"
 </div>
 </div>
 
-<input type="text" id="work"  name="work"  placeholder="Enter Work" class="form-control"/>
+<input type="text" id="work"  name="work" th:value="${contact.work}" placeholder="Enter Work" class="form-control"/>
 </div>
 
 <!--  discripition -->
 <div class="form-group mt-3">
-<textarea name="description" id="tiny"  rows="10" class="form-control" placeholder="Enter Contact Descrption "></textarea>
+<textarea name="description" id="tiny"  th:text="${contact.description}" rows="10" class="form-control" placeholder="Enter Contact Descrption "></textarea>
 </div>
 
 
 <!--  contact image  -->
+<div class="container text-center">
+<img src="#" class="img-fluid show_image " th:src="@{'/img/'+${contact.image}}" alt="" />
+</div>
 
 <div class="custom-file">
-<input type="file"  name="profileImage"/>
+<input type="file"  name="file"/>
 </div>
 <div class="container text-center">
-<button type="Submit"class="btn btn-outline-primary">Save Conatact</button>
+<button type="Submit"class="btn btn-outline-primary">Update Conatact</button>
 </div>
 
 </form>

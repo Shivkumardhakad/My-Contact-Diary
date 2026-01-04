@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,11 +18,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -172,16 +173,24 @@ public class UserController {
 	
 //    showing particular contact detail 
 	@GetMapping("/{cId}/contact")
-	public String showContactDetail(@PathVariable("cId")Integer cId,Model model) {
+	public String showContactDetail(@PathVariable("cId")Integer cId,Model model,Principal principal) {
 		     System.out.println("CID = "+cId);
 		     
-	Contact contact	    = contactRepository.findBycId(cId);
-		     
-	System.out.println(contact);
-		     model.addAttribute("title","Contact dashbord ");
-		     model.addAttribute("contact",contact);
-		     
-		
+	Contact contact	    = contactRepository.findById(cId).get();
+	                     
+	
+	String username =principal.getName();
+	 User user = userRepository.getUserByUserName(username);
+	
+	 System.out.println(contact);
+	 
+	 if(user.getId()==contact.getUser().getId())
+	 {
+		 model.addAttribute("contact",contact);
+		  model.addAttribute("title",contact.getName());
+	 }
+	 
+	
 		return "normal/contact_detail";
 	}
 	
@@ -193,12 +202,87 @@ public class UserController {
 	
 	
 // delete contact handler
-@DeleteMapping("/contact/{id}")
-public String deleteContact(@PathVariable("id") int id ) {
+@GetMapping("/delete/{cId}")
+public String deleteContact(@PathVariable("cId") int cId ,HttpSession httpsession) {
+	           Optional<Contact> optinalcontact = contactRepository.findById(cId);
+	                       Contact contact =optinalcontact.get();
+	                      try {
+	                   contactRepository.delete(contact);  
+	                   System.out.println("deleteContact"+cId);
+	                   httpsession.setAttribute("message",new Message("Contact Deleted Sucessfully ","success"));
+	                   
+	               	return "redirect:/user/show_contacts/0";
+	                      }
+	                      catch(Exception e) {
+	                    	  e.printStackTrace();
+	                    	throw   new RuntimeException("some thing went wrong data is not delted ");
+	                      }
+	                      
 	
-	
-	return "";
 }
+
+// update - form 
+@GetMapping("/update/{cId}")
+public String updateContact(@PathVariable("cId") int  cId,Model model) {
 	
+	Optional<Contact>   optionalcontact    =contactRepository.findById(cId);
+	             Contact contact =optionalcontact.get();
+	System.out.println("update is working  CID ="+cId);
+	
+	
+	
+	model.addAttribute("title","Update contact");
+	model.addAttribute("contact",contact);
+	return "normal/udate_contact";
+}
+
+// update process 
+
+@PostMapping("/update-process")
+public String updateProcess(@ModelAttribute Contact contact ,@RequestParam("file") MultipartFile file) {
+	
+	
+	try {
+	Contact upcontact    = contactRepository.findById(contact.getcId()).get();
+	        upcontact.setName(contact.getName());
+	        upcontact.setNickName(contact.getNickName());
+	        upcontact.setPhone(contact.getPhone());
+	        upcontact.setWork(contact.getWork());
+	        upcontact.setEmail(contact.getEmail());
+	        upcontact.setDescription(contact.getDescription());
+	        
+	        // image 
+	        String old_image = upcontact.getImage();
+
+	        if(!file.isEmpty()) {
+
+	            File deleteFile=new ClassPathResource("static/img").getFile();
+	            File file1= new File(deleteFile, old_image);
+
+	            file1.delete();   //  ab sirf jab new file aayegi tab delete hoga
+
+	            File saveFile=new ClassPathResource("static/img").getFile();
+	            Path path= Paths.get(saveFile.getAbsolutePath()+File.separator+file.getOriginalFilename());
+	            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+	            upcontact.setImage(file.getOriginalFilename());
+	        }
+	       
+
+	       
+	        
+	        contactRepository.save(upcontact);
+	        
+	         
+	}
+	catch(Exception e) {
+		
+		e.printStackTrace();
+	}
+	
+	return "redirect:/user/"+contact.getcId()+"/contact";
+
+}
+
 	
 }
