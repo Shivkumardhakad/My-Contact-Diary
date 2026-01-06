@@ -285,5 +285,11 @@ public String updateProcess(@ModelAttribute Contact contact ,@RequestParam("file
 
 }
 
+//Your Profile Handler
+@GetMapping("/profile")
+public String yourProfile(Model model) {
+ model.addAttribute("title", "Profile Page");
+ return "normal/profile";
+}
 	
 }

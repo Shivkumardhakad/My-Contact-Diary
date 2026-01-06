@@ -104,6 +104,21 @@ body{
   border-radius:50%;
 }
 
+/* Dashboard Card Hover Effect */
+.admin-card {
+    transition: all 0.3s ease-in-out;
+    border: 1px solid #e2e2e2;
+    background-color: #f8f9fa; /* Light grey background */
+}
+
+.admin-card:hover {
+    background-color: #ffffff;
+    transform: scale(1.03); /* Thoda sa bada hoga */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06);
+    border-color: #3ef4bd; /* Theme color border */
+    cursor: pointer;
+}
+
 
 
 
