@@ -205,6 +205,7 @@ public class UserController {
 @GetMapping("/delete/{cId}")
 public String deleteContact(@PathVariable("cId") int cId ,HttpSession httpsession) {
 	           Optional<Contact> optinalcontact = contactRepository.findById(cId);
+	           
 	                       Contact contact =optinalcontact.get();
 	                      try {
 	                   contactRepository.delete(contact);  
