@@ -80,7 +80,7 @@ public String registerUser(@Valid @ModelAttribute("user") User user,BindingResul
 		
 		user.setRole("ROLE_USER");
 		user.setEnabled(true);
-		user.setImageUrl("default.png");
+		user.setImageUrl("contact.png");
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		
 	this.userRepository.save(user);

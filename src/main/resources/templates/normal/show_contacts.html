@@ -1,116 +1,118 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="normal/base::layout(~{::section})">
+
 <head>
-	<meta charset="UTF-8" />
-	<title th:text="${title}">Show Contacts</title>
+  <meta charset="UTF-8" />
+  <title th:text="${title}">Show Contacts</title>
 </head>
+
 <body>
-<section>
-<div class="alert alert-success text-center" role="alert" th:if="${session.message}">
-  A simple success alert—check it out!
-</div>
-<div class="card mr-3">
-<div class="card-container text-center">
-<h1 >Your Contacts </h1>
-</div>
-</div>
-	<div class="container mt-4">
+  <section>
+    <div class="alert alert-success text-center" role="alert" th:if="${session.message}">
+      A simple success alert—check it out!
+    </div>
+    <div class="card mr-3">
+      <div class="card-container text-center">
+        <h1>Your Contacts </h1>
+      </div>
+    </div>
+    <div class="container mt-4">
 
-<table class="table  table-striped table-sm">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Phone</th>
-      <th scope="col">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-  <!--  show contacts -->
-  
-    <tr th:each="c : ${contacts}">
-      <th scope="row"  th:text="${'SCMUSER'+c.cId}">1</th>
-      <td > <img src="" class="my_profile_picture" th:src="@{'/img/'+${c.image}}"  alt="" />
-      <span class="ml-3" th:text="${c.name}"></span></td>
-      <td class="mt-2 "  > 
-      <a th:href="@{'/user/'+${c.cId}+'/contact'}" href="#" >
-      <span th:text="${c.email}"></span>
-      </a>  
-      
-      </td>
-      <td class="mt-2" th:text="${c.phone}" ></td>
-      <td><a href="javascript:void(0)" 
-   class="btn btn-danger btn-sm mt-2 mr-2" 
-   th:onclick="|deleteContact(${c.cId})|">
-   Delete
-</a>
+      <div class="table-responsive">
+        <table class="table  table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--  show contacts -->
 
-<a href="#" class="btn btn-primary btn-sm mt-2 mr-1" th:href="@{'/user/update/'+${c.cId}}">Update</a>
+            <tr th:each="c : ${contacts}">
+              <th scope="row" data-label="#" th:text="${'SCMUSER'+c.cId}">1</th>
+              <td data-label="Name"> <img src="" class="my_profile_picture" th:src="@{'/img/'+${c.image}}" alt="" />
+                <span class="ml-3" th:text="${c.name}"></span>
+              </td>
+              <td class="mt-2 " data-label="Email">
+                <a th:href="@{'/user/'+${c.cId}+'/contact'}" href="#">
+                  <span th:text="${c.email}"></span>
+                </a>
 
-  
-    </tr>
-    
-  </tbody>
-</table>
+              </td>
+              <td class="mt-2" data-label="Phone" th:text="${c.phone}"></td>
+              <td data-label="Actions"><a href="javascript:void(0)" class="btn btn-danger btn-sm mt-2 mr-2"
+                  th:onclick="|deleteContact(${c.cId})|">
+                  Delete
+                </a>
+
+                <a href="#" class="btn btn-primary btn-sm mt-2 mr-1" th:href="@{'/user/update/'+${c.cId}}">Update</a>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
 
 
-<!-- pegination  -->
-		<nav aria-label="Page navigation example">
-    <ul class="pagination">
-    
-        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-            <a class="page-link" 
-               th:href="${currentPage == 0} ? '#' : @{'/user/show_contacts/'+${currentPage-1}}">
-               Previous
+      <!-- pegination  -->
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+
+          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link" th:href="${currentPage == 0} ? '#' : @{'/user/show_contacts/'+${currentPage-1}}">
+              Previous
             </a>
-        </li>
-    
-        <li th:each="i : ${#numbers.sequence(1, totalPages)}" 
-            class="page-item" 
+          </li>
+
+          <li th:each="i : ${#numbers.sequence(1, totalPages)}" class="page-item"
             th:classappend="${currentPage == i-1} ? 'active'">
-            
+
             <a class="page-link" th:href="@{'/user/show_contacts/'+${i-1}}">
-                <span th:text="${i}"></span>
+              <span th:text="${i}"></span>
             </a>
-        </li>
-    
-        <li class="page-item" th:classappend="${currentPage+1 == totalPages} ? 'disabled'">
-            <a class="page-link" 
-               th:href="${currentPage+1 == totalPages} ? '#' : @{'/user/show_contacts/'+${currentPage+1}}">
-               Next
+          </li>
+
+          <li class="page-item" th:classappend="${currentPage+1 == totalPages} ? 'disabled'">
+            <a class="page-link"
+              th:href="${currentPage+1 == totalPages} ? '#' : @{'/user/show_contacts/'+${currentPage+1}}">
+              Next
             </a>
-        </li>
-        
-    </ul>
-</nav>
-</div>
-	
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+          </li>
 
-<script>
-function deleteContact(id){
+        </ul>
+      </nav>
+    </div>
 
-    Swal.fire({
-        title: "Are you sure?",
-        text: "Ye contact delete ho jayega!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "Cancel"
-    }).then((result) => {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        if (result.isConfirmed) {
+    <script>
+      function deleteContact(id) {
+
+        Swal.fire({
+          title: "Are you sure?",
+          text: "Ye contact delete ho jayega!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, delete it!",
+          cancelButtonText: "Cancel"
+        }).then((result) => {
+
+          if (result.isConfirmed) {
             window.location = "/user/delete/" + id;
-        }
-    });
-}
-</script>
+          }
+        });
+      }
+    </script>
 
 
-	
-</section>
-	
+
+  </section>
+
 </body>
+
 </html>
