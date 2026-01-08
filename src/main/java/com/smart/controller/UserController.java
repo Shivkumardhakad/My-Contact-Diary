@@ -113,10 +113,12 @@ public class UserController {
    File saveFile=new ClassPathResource("static/img").getFile();
 
    
-   Path path= Paths.get(saveFile.getAbsolutePath()+File.separator+file.getOriginalFilename());	
-   try (InputStream ins = file.getInputStream()) {
-	    Files.copy(ins, path, StandardCopyOption.REPLACE_EXISTING);
-	}
+
+String uploadDir = System.getProperty("java.io.tmpdir"); // Temp folder use karega
+Path path = Paths.get(uploadDir + File.separator + file.getOriginalFilename());
+try (InputStream ins = file.getInputStream()) {
+    Files.copy(ins, path, StandardCopyOption.REPLACE_EXISTING);
+}
 
 
 		}
@@ -261,7 +263,8 @@ public String updateProcess(@ModelAttribute Contact contact ,@RequestParam("file
 	            File file1= new File(deleteFile, old_image);
 
 	            file1.delete();   //  ab sirf jab new file aayegi tab delete hoga
-// Render/Linux server ke liye fix
+
+				// ✅ NAYA CODE (Ise Paste karo)
 String uploadDir = System.getProperty("java.io.tmpdir");
 Path path = Paths.get(uploadDir + File.separator + file.getOriginalFilename());
 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
