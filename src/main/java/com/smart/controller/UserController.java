@@ -261,11 +261,10 @@ public String updateProcess(@ModelAttribute Contact contact ,@RequestParam("file
 	            File file1= new File(deleteFile, old_image);
 
 	            file1.delete();   //  ab sirf jab new file aayegi tab delete hoga
-
-	            File saveFile=new ClassPathResource("static/img").getFile();
-	            Path path= Paths.get(saveFile.getAbsolutePath()+File.separator+file.getOriginalFilename());
-	            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-
+// Render/Linux server ke liye fix
+String uploadDir = System.getProperty("java.io.tmpdir");
+Path path = Paths.get(uploadDir + File.separator + file.getOriginalFilename());
+Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 	            upcontact.setImage(file.getOriginalFilename());
 	        }
 	       
@@ -285,11 +284,18 @@ public String updateProcess(@ModelAttribute Contact contact ,@RequestParam("file
 
 }
 
-//Your Profile Handler
-@GetMapping("/profile")
-public String yourProfile(Model model) {
- model.addAttribute("title", "Profile Page");
- return "normal/profile";
-}
-	
+    //Your Profile Handler
+    @GetMapping("/profile")
+    public String yourProfile(Model model) {
+        model.addAttribute("title", "Profile Page");
+        return "normal/profile";
+    }
+
+    // Community Chat Handler
+    @GetMapping("/chat")
+    public String communityChat(Model model) {
+        model.addAttribute("title", "Community Chat");
+        return "normal/chat";
+    }
+
 }
