@@ -85,67 +85,42 @@ public class UserController {
 	// save add data
 	@PostMapping("/process-contact")
 	public String addContact(@ModelAttribute("contact") Contact contact,
-			@RequestParam("profileImage")MultipartFile file
-			,Principal principal,HttpSession session) {
-		
-		
-		String type;
-		
-		if(contact!=null) {
-		try {
-		
-		
-		String  name =principal.getName();
-		User user =userRepository.getUserByUserName(name);
-		
-		
-		// process in and uploading file 
-		
-		if(file.isEmpty()) {
-			
-			System.out.println("Image file :" +"file does not receved");
-			contact.setImage("contact.png");
-		}
-		else {
-			
-		contact.setImage(file.getOriginalFilename());
-		
-   File saveFile=new ClassPathResource("static/img").getFile();
-
-   
-
-String uploadDir = System.getProperty("java.io.tmpdir"); // Temp folder use karega
-Path path = Paths.get(uploadDir + File.separator + file.getOriginalFilename());
-try (InputStream ins = file.getInputStream()) {
-    Files.copy(ins, path, StandardCopyOption.REPLACE_EXISTING);
-}
-
-
-		}
-		
-			  contact.setUser(user);
-		      user.getContacts().add(contact);
-		     
-		     
-		     
-			 userRepository.save(user);
-			 session.setAttribute("message",new Message("Your Contact is added Sucessfully", "success"));
-		     System.out.println("user  "+user);
-		     System.out.println("user  "+contact);
-     
-		}
-		catch(Exception e) {
-			System.out.println("Exception "+e.getMessage() );
-			session.setAttribute("message",new Message("Something went wrong try agin", "error"));
-			e.printStackTrace();
-			
-			
-		}
-		 return "redirect:/user/add-contact";
-		}
-		
-		return "/error";
-		
+	        @RequestParam("profileImage") MultipartFile file,
+	        Principal principal, HttpSession session) {
+	    
+	    try {
+	        String name = principal.getName();
+	        User user = userRepository.getUserByUserName(name);
+	        
+	        // Image Processing
+	        if(file.isEmpty()) {
+	            System.out.println("Image is empty");
+	            contact.setImage("contact.png");
+	        }
+	        else {
+	            // File ka naam set kiya
+	            contact.setImage(file.getOriginalFilename());
+	            
+	            // ✅ LIVE SERVER FIX: Temp folder use kar rahe hain
+	            String uploadDir = System.getProperty("java.io.tmpdir");
+	            Path path = Paths.get(uploadDir + File.separator + file.getOriginalFilename());
+	            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+	            System.out.println("Image Uploaded to: " + path);
+	        }
+	        
+	        contact.setUser(user);
+	        user.getContacts().add(contact);
+	        
+	        userRepository.save(user);
+	        session.setAttribute("message", new Message("Your Contact is added Successfully", "success"));
+	    
+	    } catch(Exception e) {
+	        System.out.println("Error: " + e.getMessage());
+	        e.printStackTrace();
+	        session.setAttribute("message", new Message("Something went wrong try again", "danger"));
+	    }
+	    
+	    return "redirect:/user/add-contact";
 	}
 	@GetMapping("/show_contacts/{page}")
 	public String showContact(@PathVariable("page") Integer page, Model model, Principal principal) {
@@ -242,49 +217,39 @@ public String updateContact(@PathVariable("cId") int  cId,Model model) {
 // update process 
 
 @PostMapping("/update-process")
-public String updateProcess(@ModelAttribute Contact contact ,@RequestParam("file") MultipartFile file) {
-	
-	
-	try {
-	Contact upcontact    = contactRepository.findById(contact.getcId()).get();
-	        upcontact.setName(contact.getName());
-	        upcontact.setNickName(contact.getNickName());
-	        upcontact.setPhone(contact.getPhone());
-	        upcontact.setWork(contact.getWork());
-	        upcontact.setEmail(contact.getEmail());
-	        upcontact.setDescription(contact.getDescription());
-	        
-	        // image 
-	        String old_image = upcontact.getImage();
+public String updateProcess(@ModelAttribute Contact contact, @RequestParam("file") MultipartFile file, HttpSession session) {
 
-	        if(!file.isEmpty()) {
+    try {
+        // Old contact fetch kiya
+        Contact oldContactDetail = contactRepository.findById(contact.getcId()).get();
+    
+        // Agar nayi image aayi hai
+        if(!file.isEmpty()) {
+            
+            // ✅ LIVE SERVER FIX: Purani file delete karne ka code HATA DIYA hai
+            // Sirf nayi file upload kar rahe hain
+            String uploadDir = System.getProperty("java.io.tmpdir");
+            Path path = Paths.get(uploadDir + File.separator + file.getOriginalFilename());
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            
+            contact.setImage(file.getOriginalFilename());
+        }
+        else {
+            // Agar nayi photo nahi hai, purani hi rakho
+            contact.setImage(oldContactDetail.getImage());
+        }
 
-	            File deleteFile=new ClassPathResource("static/img").getFile();
-	            File file1= new File(deleteFile, old_image);
-
-	            file1.delete();   //  ab sirf jab new file aayegi tab delete hoga
-
-				// ✅ NAYA CODE (Ise Paste karo)
-String uploadDir = System.getProperty("java.io.tmpdir");
-Path path = Paths.get(uploadDir + File.separator + file.getOriginalFilename());
-Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-	            upcontact.setImage(file.getOriginalFilename());
-	        }
-	       
-
-	       
-	        
-	        contactRepository.save(upcontact);
-	        
-	         
-	}
-	catch(Exception e) {
-		
-		e.printStackTrace();
-	}
-	
-	return "redirect:/user/"+contact.getcId()+"/contact";
-
+        User user = oldContactDetail.getUser();
+        contact.setUser(user);
+        
+        contactRepository.save(contact);
+        session.setAttribute("message", new Message("Contact Updated Successfully", "success"));
+    }
+    catch(Exception e) {
+        e.printStackTrace();
+    }
+    
+    return "redirect:/user/" + contact.getcId() + "/contact";
 }
 
     //Your Profile Handler
